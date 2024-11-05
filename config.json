@@ -1,0 +1,40 @@
+{
+    "models": [
+      {
+        "title": "Mistral-Codestral",
+        "model": "codestral",
+        "completionOptions": {},
+        "apiBase": "http://yourhost:11434",
+        "provider": "ollama"
+      }
+    ],
+    "customCommands": [
+      {
+        "name": "test",
+        "prompt": "{{{ input }}}\n\nWrite a comprehensive set of unit tests for the selected code. It should setup, run tests that check for correctness including important edge cases, and teardown. Ensure that the tests are complete and sophisticated. Give the tests just as chat output, don't edit any file.",
+        "description": "Write unit tests for highlighted code"
+      }
+    ],
+    "tabAutocompleteModel": {
+      "title": "codestral",
+      "provider": "ollama",
+      "model": "codestral",
+      "apiBase": "http://yourhost:11434"
+    },
+    "contextProviders": [
+      {
+        "name": "codebase",
+        "params": {
+          "nRetrieve": 25,
+          "nFinal": 5,
+          "useReranking": true
+        }
+      }
+    ],
+    "embeddingsProvider": {
+      "provider": "ollama",
+      "model": "codestral",
+      "apiBase": "http://yourhost:11434"
+    },
+    "docs": []
+  }
