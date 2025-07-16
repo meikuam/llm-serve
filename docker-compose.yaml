@@ -29,7 +29,7 @@ services:
         target: /root/.ollama
 
   webui:
-    image: ghcr.io/open-webui/open-webui:main
+    image: ghcr.io/open-webui/open-webui:v0.6.16
     ports:
       - "32889:8080"
     environment:
