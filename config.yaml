@@ -1,0 +1,41 @@
+name: Local
+version: 1.0.0
+schema: v1
+models:
+  - name: Mistral-Codestral
+    provider: ollama
+    apiBase: http://yourhost:11434
+    model: codestral
+context:
+  - provider: file
+  - provider: code
+  - provider: diff
+  - provider: currentFile
+  - provider: terminal
+  - provider: docs
+  - provider: open
+  - provider: web
+  - provider: codebase
+  - provider: folder
+  - provider: search
+  - provider: url
+  - provider: clipboard
+  - provider: tree
+  - provider: problems
+  - provider: debugger
+  - provider: repo-map
+  - provider: os
+
+prompts:
+  - name: refine
+    description: Refine document
+    prompt: |
+      Read the provided documents or sections of documents. Respond with "I've processed the content of <names of all given documents>. Please let me know if there's anything specific you would like to change within this document(s)!". No other text is allowed in the first response.
+            
+      Following your initial response, the user may modify the document themselves and include the changes in their reply. Additionally, the user might insert a comment block within the changes to clarify their intended modifications. Ensure you understand these changes and only refine those specific parts, unless the user explicitly requests otherwise. This process will involve continuous, iterative interactions with the user, refining the document until the user is content.
+
+      ## OUTPUT
+
+      - Only output the specific part requested by the user, not the whole document.
+      - Format output as a copyable markdown block. Do NOT write the file name at the top.
+      - For numbering, use number `1` for all list items (not 1, 2, 3, etc) to simplify markdown authoring.
