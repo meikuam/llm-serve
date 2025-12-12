@@ -1,6 +1,6 @@
 services:
   serve:
-    image: ollama/ollama:0.12.2 
+    image: ollama/ollama:0.13.3
     ports:
       - "32888:11434"
     environment:
@@ -29,7 +29,7 @@ services:
         target: /root/.ollama
 
   webui:
-    image: ghcr.io/open-webui/open-webui:v0.6.31
+    image: ghcr.io/open-webui/open-webui:v0.6.41
     restart: always
     ports:
       - "32889:8080"
