@@ -1,6 +1,6 @@
 services:
   serve:
-    image: ollama/ollama:0.13.3
+    image: ollama/ollama:0.13.4
     ports:
       - "32888:11434"
     environment:
@@ -38,7 +38,7 @@ services:
       ENABLE_WEBSOCKET_SUPPORT: true
     volumes:
       - type: bind
-        source: .open-webui
+        source: ./open-webui
         target: /app/backend/data
     depends_on:
       - serve
