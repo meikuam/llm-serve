@@ -1,11 +1,11 @@
 services:
   serve:
-    image: ollama/ollama:0.13.4
+    image: ollama/ollama:0.17.7
     ports:
       - "32888:11434"
     environment:
       OLLAMA_HOST: "0.0.0.0:11434"
-      OLLAMA_KEEP_ALIVE: "30m"
+      OLLAMA_KEEP_ALIVE: "60m"
       OLLAMA_GPU_OVERHEAD: "0"
       OLLAMA_FLASH_ATTENTION: "1"
       OLLAMA_MAX_LOADED_MODELS: "2"
@@ -29,7 +29,7 @@ services:
         target: /root/.ollama
 
   webui:
-    image: ghcr.io/open-webui/open-webui:v0.6.41
+    image: ghcr.io/open-webui/open-webui:v0.8.10
     restart: always
     ports:
       - "32889:8080"
