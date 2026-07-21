@@ -16,8 +16,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "8"
-          memory: "32G"
+          cpus: "12"
+          memory: "60G"
         reservations:
           devices:
             - driver: nvidia
@@ -42,3 +42,29 @@ services:
         target: /app/backend/data
     depends_on:
       - serve
+
+  searxng:
+    image: searxng/searxng:latest
+    restart: always
+    ports:
+      - "32890:8080"
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    environment:
+      - SEARXNG_HOSTNAME=localhost:32890/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+  watchtower:
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_LOG_LEVEL: "info"
+      WATCHTOWER_POLL_INTERVAL: "12h"
+
