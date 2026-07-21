@@ -1,3 +1,5 @@
 .vscode
 ollama/
 open-webui/
+file_exports/
+.env

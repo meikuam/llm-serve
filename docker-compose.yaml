@@ -25,7 +25,7 @@ services:
               capabilities: [gpu]
     volumes:
       - type: bind
-        source: ./ollama
+        source: ${OLLAMA_MODELS_DIR}
         target: /root/.ollama
     networks:
       - webui-net  
@@ -37,6 +37,7 @@ services:
       - "32889:8080"
     environment:
       OLLAMA_BASE_URL: "http://serve:11434"
+      WEBUI_SECRET_KEY: ${WEBUI_SECRET_KEY}
       ENABLE_WEBSOCKET_SUPPORT: true
       SEARCH_ENGINE: "searxng"
       SEARXNG_BASE_URL: "http://searxng:8080"
@@ -86,6 +87,39 @@ services:
       WATCHTOWER_CLEANUP: "false"
       WATCHTOWER_LOG_LEVEL: "info"
       WATCHTOWER_POLL_INTERVAL: "12h"
+  
+  file-export-server:
+    image: ghcr.io/glissemantv/owui-file-export-server:latest
+    container_name: file-export-server
+    restart: always
+    environment:
+      - FILE_EXPORT_DIR=/file_exports
+    ports:
+      - "32893:9003"
+    volumes:
+      - ./file_exports:/file_exports
+    networks:
+      - webui-net
+
+  owui-mcpo:
+    image: ghcr.io/glissemantv/owui-mcpo:latest
+    container_name: owui-mcpo
+    restart: always
+    environment:
+      - FILE_EXPORT_BASE_URL=http://${PUBLIC_IP}:32893/files
+      - FILE_EXPORT_DIR=/file_exports       
+      - PERSISTENT_FILES=true
+      - FILES_DELAY=1
+      - LOG_LEVEL=INFO
+      - OWUI_URL=http://webui:8080 
+    ports:
+      - "32892:8000"
+    volumes:
+      - ./file_exports:/file_exports
+    depends_on:
+      - file-export-server
+    networks:
+      - webui-net
 
 networks:
   webui-net:
