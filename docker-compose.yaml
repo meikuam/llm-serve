@@ -29,6 +29,8 @@ services:
         target: /root/.ollama
     networks:
       - webui-net  
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   webui:
     image: ghcr.io/open-webui/open-webui:v0.10.2
@@ -52,6 +54,8 @@ services:
       - serve
     networks:
       - webui-net  
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   searxng:
     image: searxng/searxng:latest
@@ -67,12 +71,16 @@ services:
         max-file: "1"
     networks:
       - webui-net 
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   tika:
     image: apache/tika:latest-full
     restart: always
     networks:
       - webui-net
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   watchtower:
     image: containrrr/watchtower
@@ -83,6 +91,7 @@ services:
       WATCHTOWER_CLEANUP: "false"
       WATCHTOWER_LOG_LEVEL: "info"
       WATCHTOWER_POLL_INTERVAL: "12h"
+      WATCHTOWER_LABEL_ENABLE: "true"
   
   file-export-server:
     image: ghcr.io/glissemantv/owui-file-export-server:latest
@@ -95,6 +104,8 @@ services:
       - ./file_exports:/file_exports
     networks:
       - webui-net
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   owui-mcpo:
     image: ghcr.io/glissemantv/owui-mcpo:latest
@@ -114,6 +125,8 @@ services:
       - file-export-server
     networks:
       - webui-net
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
 networks:
   webui-net:
