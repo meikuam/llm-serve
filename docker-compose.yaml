@@ -2,7 +2,7 @@ services:
   serve:
     image: ollama/ollama:0.32.1
     ports:
-      - "32888:11434"
+      - "${OLLAMA_PORT}:11434"
     environment:
       OLLAMA_HOST: "0.0.0.0:11434"
       OLLAMA_KEEP_ALIVE: "60m"
@@ -34,7 +34,7 @@ services:
     image: ghcr.io/open-webui/open-webui:v0.10.2
     restart: always
     ports:
-      - "32889:8080"
+      - "${WEBUI_PORT}:8080"
     environment:
       OLLAMA_BASE_URL: "http://serve:11434"
       WEBUI_SECRET_KEY: ${WEBUI_SECRET_KEY}
@@ -43,6 +43,7 @@ services:
       SEARXNG_BASE_URL: "http://searxng:8080"
       RAG_EMBEDDING_ENGINE: "ollama"
       RAG_EMBEDDING_MODEL: "qwen3-embedding:4b"
+      WEBUI_URL: "http://${PUBLIC_IP}:${WEBUI_PORT}"
     volumes:
       - type: bind
         source: ./open-webui
@@ -55,8 +56,6 @@ services:
   searxng:
     image: searxng/searxng:latest
     restart: always
-    ports:
-      - "32890:8080"
     volumes:
       - ./searxng:/etc/searxng:rw
     environment:
@@ -71,10 +70,7 @@ services:
 
   tika:
     image: apache/tika:latest-full
-    container_name: tika
     restart: always
-    ports:
-      - "32891:9998"
     networks:
       - webui-net
 
@@ -90,12 +86,11 @@ services:
   
   file-export-server:
     image: ghcr.io/glissemantv/owui-file-export-server:latest
-    container_name: file-export-server
     restart: always
     environment:
       - FILE_EXPORT_DIR=/file_exports
     ports:
-      - "32893:9003"
+      - "${FILE_EXPORT_PORT}:9003"
     volumes:
       - ./file_exports:/file_exports
     networks:
@@ -103,17 +98,16 @@ services:
 
   owui-mcpo:
     image: ghcr.io/glissemantv/owui-mcpo:latest
-    container_name: owui-mcpo
     restart: always
     environment:
-      - FILE_EXPORT_BASE_URL=http://${PUBLIC_IP}:32893/files
+      - FILE_EXPORT_BASE_URL=http://${PUBLIC_IP}:${FILE_EXPORT_PORT}/files
       - FILE_EXPORT_DIR=/file_exports       
       - PERSISTENT_FILES=true
       - FILES_DELAY=1
       - LOG_LEVEL=INFO
       - OWUI_URL=http://webui:8080 
     ports:
-      - "32892:8000"
+      - "${WEBUI_MCPO_PORT}:8000"
     volumes:
       - ./file_exports:/file_exports
     depends_on:
