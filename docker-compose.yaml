@@ -1,6 +1,6 @@
 services:
   serve:
-    image: ollama/ollama:0.32.1
+    image: ollama/ollama:0.32.15
     ports:
       - "${OLLAMA_PORT}:11434"
     environment:
@@ -33,10 +33,10 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
 
   webui:
-    image: ghcr.io/open-webui/open-webui:v0.10.2
+    image: ghcr.io/open-webui/open-webui:v0.11.0
     restart: always
     ports:
-      - "${WEBUI_PORT}:8080"
+      - ${WEBUI_PORT}:8080
     environment:
       OLLAMA_BASE_URL: "http://serve:11434"
       WEBUI_SECRET_KEY: ${WEBUI_SECRET_KEY}
@@ -62,6 +62,8 @@ services:
     restart: always
     volumes:
       - ./searxng:/etc/searxng:rw
+    ports:
+      - "${SEARXNG_PORT}:8080"
     environment:
       - SEARXNG_BASE_URL=http://searxng:8080
     logging:
