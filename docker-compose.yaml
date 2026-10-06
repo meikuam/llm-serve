@@ -1,6 +1,6 @@
 services:
   serve:
-    image: ollama/ollama:0.32.15
+    image: ollama/ollama:0.35.1
     ports:
       - "${OLLAMA_PORT}:11434"
     environment:
@@ -33,7 +33,7 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
 
   webui:
-    image: ghcr.io/open-webui/open-webui:v0.11.0
+    image: ghcr.io/open-webui/open-webui:v0.11.4
     restart: always
     ports:
       - ${WEBUI_PORT}:8080
