@@ -33,7 +33,7 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
 
   webui:
-    image: ghcr.io/open-webui/open-webui:v0.11.4
+    image: ghcr.io/open-webui/open-webui:v0.12.3
     restart: always
     ports:
       - ${WEBUI_PORT}:8080
@@ -57,6 +57,32 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
 
+  whisper:
+    image: hwdsl2/whisper-server:cuda
+    ports:
+      - "${WHISPER_PORT}:9000"
+    volumes:
+      - ./whisper-data:/var/lib/whisper
+    environment:
+      - WHISPER_MODEL=large-v3-turbo
+      - WHISPER_COMPUTE_TYPE=float16
+      - WHISPER_LANGUAGE=ru
+      - WHISPER_DEVICE=cuda
+      - WHISPER_DIARIZATION=true
+      - WHISPER_VAD_FILTER=false
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: always
+    networks:
+      - webui-net 
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+  
   searxng:
     image: searxng/searxng:latest
     restart: always
