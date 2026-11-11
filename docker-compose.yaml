@@ -1,6 +1,6 @@
 services:
   serve:
-    image: ollama/ollama:0.35.1
+    image: ollama/ollama:0.40.16
     ports:
       - "${OLLAMA_PORT}:11434"
     environment:
@@ -8,20 +8,20 @@ services:
       OLLAMA_KEEP_ALIVE: "60m"
       OLLAMA_GPU_OVERHEAD: "0"
       OLLAMA_FLASH_ATTENTION: "1"
-      OLLAMA_MAX_LOADED_MODELS: "2"
+      OLLAMA_MAX_LOADED_MODELS: "0"
       OLLAMA_MAX_QUEUE: "64"
       OLLAMA_NUM_PARALLEL: 1
-      OLLAMA_NEW_ENGINE: 1
+      OLLAMA_CONTEXT_LENGTH: "65536"
     restart: always
     deploy:
       resources:
         limits:
-          cpus: "12"
+          cpus: "16"
           memory: "60G"
         reservations:
           devices:
             - driver: nvidia
-              count: all
+              device_ids: ['0', '1', '2']
               capabilities: [gpu]
     volumes:
       - type: bind
@@ -31,6 +31,43 @@ services:
       - webui-net  
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
+
+  # vllm:
+  #   image: vllm/vllm-openai:latest
+  #   container_name: vllm-gemma
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: "16"
+  #         memory: "60G"
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             device_ids: ['1', '2']
+  #             capabilities: [gpu]
+  #   volumes:
+  #     - type: bind
+  #       source: ${VLLM_MODELS_DIR}
+  #       target: /root/.cache/huggingface
+  #   ports:
+  #     - "${VLLM_PORT}:8000"
+  #   ipc: host
+  #   environment:
+  #     HF_TOKEN: "${HF_TOKEN}"
+  #   command: >
+  #     cyankiwi/gemma-4-31B-it-qat-AWQ-INT4
+  #     --tensor-parallel-size 2
+  #     --served-model-name gemma-4-31b
+  #     --max-model-len 32768
+  #     --gpu-memory-utilization 0.5
+  #     --kv-cache-dtype fp8
+  #     --enforce-eager
+  #     --api-key "${VLLM_API_KEY}"
+  #   restart: always
+  #   networks:
+  #     - webui-net  
+  #   labels:
+  #     - "com.centurylinklabs.watchtower.enable=true"
 
   webui:
     image: ghcr.io/open-webui/open-webui:v0.12.3

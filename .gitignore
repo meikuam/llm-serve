@@ -3,3 +3,4 @@ ollama/
 open-webui/
 file_exports/
 .env
+whisper-data/
